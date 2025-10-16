@@ -59,7 +59,7 @@ class MagicWumpusWorld:
     def CurrentState(self) -> Optional[Coord]:
         return self._state
 
-    def CumulativeRewardAndSteps(self) -> int:
+    def CumulativeRewardAndSteps(self) -> tuple[int, int]: # EDIT WAS MADE HERE
         return self._episode_return, self._step
 
     def TakeAction(self, a: str) -> Tuple[int, Optional[Coord]]:
@@ -192,11 +192,11 @@ class MagicWumpusWorld:
 
 def _interactive_loop(env: MagicWumpusWorld) -> None:
     print("Interactive Magic Wumpus World (Up/Down/Left/Right; 'q' quit, 'r' reset)")
-    print(f"Start at {env.cell_name(env.CurrentState())} = {env.CurrentState()}; Goal is G={env.GOAL}")
+    print(f"Start at {env.cell_name(env.CurrentState())} = {env.CurrentState()}; Goal is G={env.GOAL}") # type:ignore
     while True:
         s = env.CurrentState()
         if s is None:
-            print(f"Episode over. Cumulative reward was {env.CumulativeReward()}.")
+            print(f"Episode over. Cumulative reward was {env.CumulativeRewardAndSteps()}.") # EDIT WAS MADE HERE
             cmd = input("Type 'r' to reset or 'q' to quit > ").strip()
             if cmd.lower() == "r":
                 env.reset()
@@ -235,13 +235,13 @@ def main(argv: List[str]) -> int:
         for a in sequence:
             s = env.CurrentState()
             if s is None:
-                print(f"(Episode ended. Cumulative reward was {env.CumulativeReward()})")
+                print(f"(Episode ended. Cumulative reward was {env.CumulativeRewardAndSteps()})") # EDIT WAS MADE HERE
                 break
             reward, ns = env.TakeAction(a)
             print(f"  {a:>5} | reward={reward:>4} | next_state={ns}")
         if env.CurrentState() is not None:
             print("(Demo finished; episode may still be running.)")
-            print(f"Current cumulative reward: {env.CumulativeReward()}")
+            print(f"Current cumulative reward: {env.CumulativeRewardAndSteps()}") # EDIT WAS MADE HERE
     return 0
 
 
